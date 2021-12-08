@@ -1,0 +1,55 @@
+﻿@using Entities.Data;
+@using Entities.Models
+@using Entities.Models.Business
+
+
+<hr />
+<select class="form-control" @onchange="CategoryChanged">
+    <option value="">Seleccione categoria...</option>
+    @foreach(var category in categories)
+    {
+        <option value="@category.CategoryId">@category.CategoryName</option>
+    }
+</select>
+<hr />
+
+
+<table class="table table-hover table-bordered">
+    <thead>
+        <th>Referencia</th>
+        <th>Nombre producto</th>
+        <th>Categoria</th>
+    </thead>
+    
+    <tbody>
+        @foreach(var product in products)
+        {
+            <tr>
+                <td>@product.ProductId</td>
+                <td>@product.ProductName</td>
+                <td>@product.Category</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@code {
+    List<ProductEntity> products = new List<ProductEntity>();
+    List<ProductEntity> tempProducts = new List<ProductEntity>();
+    List<CategoryEntity> categories = new List<CategoryEntity>();
+
+    protected override async Task OnInitializerAsync()
+    {
+        products = B_Product.ProductList();
+        tempProducts = products;
+        categories = B_Category.CategoryList();
+    }
+
+    private void CategoryChanged(ChangeEventArgs element)
+    {
+        tempProducts = products.Where(c => c.CategoryId == element.Value.ToString()).ToList();
+    } 
+
+
+}
